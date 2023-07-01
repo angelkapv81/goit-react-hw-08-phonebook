@@ -19,7 +19,6 @@ export const fetchContacts = createAsyncThunk(
 export const addContact = createAsyncThunk(
   'contacts/addContact',
   async (contact, thunkAPI) => {
-    console.log(contact);
     try {
       const response = await instance.post('/contacts', contact);
       return response.data;
