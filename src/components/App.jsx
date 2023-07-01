@@ -1,23 +1,40 @@
-import { Routes, Route } from "react-router-dom";
-import SharedLayout from "../pages/Layout";
-import Home from "../pages/HomePage";
-import ContactsPage from "../pages/ContactsPage";
-import Login from "../pages/LoginPage";
-import RegisterPage from "../pages/RegisterPage";
-import NotFound from "../pages/NotFound";
+import { useEffect, lazy } from 'react';
+import { useDispatch } from 'react-redux';
+import { Route, Routes, Navigate } from 'react-router-dom';
 
-const App = () => {
+
+import PrivateRoute from 'components/PrivateRoute';
+import RestrictedRoute from 'components/RestrictedRoute';
+import { current } from 'store/auth/operations';
+import SharedLayout from 'components/SharedLayout/SharedLayout';
+
+const HomePage = lazy(() => import('pages/Home'));
+const RegisterPage = lazy(() => import('pages/Register'));
+const LoginPage = lazy(() => import('pages/Login'));
+const ContactsPage = lazy(() => import('pages/Contacts'));
+
+export const App = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(current);
+  }, [dispatch]);
+
   return (
+
     <Routes>
       <Route path="/" element={<SharedLayout />}>
-        <Route index element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/contacts" element={<ContactsPage />} />
-        <Route path="*" element={<NotFound />} />
-      </Route >
+        <Route index element={<HomePage />} />
+        <Route element={<PrivateRoute />}>
+          <Route path="/contacts" element={<ContactsPage />} />
+        </Route>
+        <Route element={<RestrictedRoute />}>
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/login" element={<LoginPage />} />
+        </Route>
+        <Route path="*" element={<Navigate to="/" replace={true} />} />
+      </Route>
     </Routes>
-  )
-};
 
-export default App;
+  );
+};

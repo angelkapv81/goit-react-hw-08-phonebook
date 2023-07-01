@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { BsTrash } from 'react-icons/bs';
 
 import {
-  selectError,
-  selectFilteredContacts,
-  selectIsLoading,
-} from '../../store/contacts/selectors';
+  getError,
+  getFilteredContacts,
+  getIsLoading,
+} from '../../../store/contacts/selectors';
 
-import { fetchContacts, removeContact } from '../../store/contacts/operations';
+import { fetchContacts, deleteContact } from '../../../store/contacts/operations';
 import Loader from '../Loader';
 
 import {
@@ -21,16 +22,16 @@ import {
 const Contacts = () => {
   const dispatch = useDispatch();
 
-  const filteredContacts = useSelector(selectFilteredContacts);
-  const isLoading = useSelector(selectIsLoading);
-  const error = useSelector(selectError);
+  const filteredContacts = useSelector(getFilteredContacts);
+  const isLoading = useSelector(getIsLoading);
+  const error = useSelector(getError);
 
   useEffect(() => {
     dispatch(fetchContacts());
   }, [dispatch]);
 
   const handleDeleteContact = id => {
-    dispatch(removeContact(id));
+    dispatch(deleteContact(id));
   };
 
   return (
@@ -46,8 +47,7 @@ const Contacts = () => {
                 <p>
                   {name} : {number}
                 </p>
-                <ContactButton onClick={() => handleDeleteContact(id)}>
-                  Delete contact
+                <ContactButton onClick={() => handleDeleteContact(id)}><BsTrash />
                 </ContactButton>
               </ContactItem>
             ))}

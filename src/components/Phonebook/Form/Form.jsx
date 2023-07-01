@@ -12,12 +12,19 @@ import {
 } from './Form.styled';
 import { nanoid } from 'nanoid';
 
+
+
 function Form() {
   const dispatch = useDispatch();
-  const contacts = useSelector(state => state.contacts.contacts);
+  const contacts = useSelector(state => state.contacts.items);
 
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
+
+  const reset = () => {
+    setName('');
+    setNumber('');
+  };
 
   const handleSubmit = event => {
     event.preventDefault();
@@ -44,10 +51,7 @@ function Form() {
     reset();
   };
 
-  const reset = () => {
-    setName('');
-    setNumber('');
-  };
+
 
   const handleChange = event => {
     const { name, value } = event.target;

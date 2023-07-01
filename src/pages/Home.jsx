@@ -1,9 +1,10 @@
+import { useState, useEffect } from 'react';
 import { BsFillTelephoneFill } from 'react-icons/bs';
 
-import { useState, useEffect } from 'react';
 
-const Home = () => {
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+export default function Home() {
+  
+const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   useEffect(() => {
     // Обновление ширины окна при изменении размера окна браузера
@@ -18,11 +19,11 @@ const Home = () => {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
-
   return (
     <>
       <h1>
-        Phonebook <BsFillTelephoneFill />
+        Phonebook
+        <BsFillTelephoneFill />
       </h1>
       <hr />
 
@@ -45,6 +46,4 @@ const Home = () => {
       </div>
     </>
   );
-};
-
-export default Home;
+}

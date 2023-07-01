@@ -1,54 +1,64 @@
-import axios from "axios";
-import { createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import swal from 'sweetalert';
 
-axios.defaults.baseURL = "https://connections-api.herokuapp.com/";
+import * as api from 'services/auth';
 
-// Utility to add JWT
-const setAuthHeader = token => {
-  axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-};
-
-// Utility to remove JWT
-const clearAuthHeader = () => {
-  axios.defaults.headers.common.Authorization = '';
-};
-
-export const register = createAsyncThunk(
-    'auth/register',
-    async (credentials, thunkAPI) => {
-        try {
-            const res = await axios.post('/users/signup', credentials);
-            console.log('res.data', res.data);
-            setAuthHeader(res.data.token);
-            return res.data;
-        } catch (error) {
-            console.log(error);
-            return thunkAPI.rejectWithValue(error.message);
-        }
+export const signup = createAsyncThunk(
+  'auth/signup',
+  async (data, { rejectWithValue }) => {
+    try {
+      const result = await api.signup(data);
+      return result;
+    } catch ({ response }) {
+      return rejectWithValue(response.message);
     }
+  }
 );
-
 
 export const login = createAsyncThunk(
-    'auth/login',
-    async (credentials, thunkAPI) => {
-        try {
-            const res = await axios.post('/users/login', credentials);
-            setAuthHeader(res.data.token);
-            console.log('res.data', res.data);
-            return res.data;
-        } catch (error) {
-            return thunkAPI.rejectWithValue(error.message);
-        }
+  'auth/login',
+  async (data, { rejectWithValue }) => {
+    try {
+      const result = await api.login(data);
+      swal('Login success!', '', 'success');
+      return result;
+    } catch ({ response }) {
+      swal('Login failed!', 'Please check your email or password.', 'error');
+      return rejectWithValue(response.message);
     }
+  }
 );
 
-export const logout = createAsyncThunk('auth/logout',
-  async (_, thunkAPI) => {
-  try {
-    await axios.post('/users/logout');
-    clearAuthHeader();
-  } catch (error) {
-    return thunkAPI.rejectWithValue(error.message);
+export const current = createAsyncThunk(
+  'auth/current',
+  async (_, { rejectWithValue, getState }) => {
+    try {
+      const { auth } = getState();
+      const data = await api.getCurrent(auth.token);
+      console.log(data);
+      return data;
+    } catch ({ response }) {
+      return rejectWithValue(response.message);
+    }
+  },
+  {
+    condition: (_, { getState }) => {
+      const { auth } = getState();
+      if (!auth.token) {
+        return false;
+      }
+    },
   }
-});
+);
+
+export const logout = createAsyncThunk(
+  'auth/logout',
+  async (_, { rejectWithValue }) => {
+    try {
+      const data = await api.logout();
+      return data;
+    } catch ({ response }) {
+      return rejectWithValue(response.message);
+    }
+  }
+);

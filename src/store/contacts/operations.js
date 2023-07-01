@@ -1,16 +1,17 @@
-import axios from 'axios';
 import { createAsyncThunk } from '@reduxjs/toolkit';
+// import axios from 'axios';
+import instance from 'services/auth';
 
-axios.defaults.baseURL = "https://connections-api.herokuapp.com";
+// axios.defaults.baseURL = 'https://connections-api.herokuapp.com';
 
 export const fetchContacts = createAsyncThunk(
   'contacts/fetchAll',
   async (_, thunkAPI) => {
     try {
-      const response = await axios.get('/contacts');
+      const response = await instance.get('/contacts');
       return response.data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e.message);
     }
   }
 );
@@ -18,24 +19,36 @@ export const fetchContacts = createAsyncThunk(
 export const addContact = createAsyncThunk(
   'contacts/addContact',
   async (contact, thunkAPI) => {
+    console.log(contact);
     try {
-      const response = await axios.post('/contacts', contact);
-      console.log(response.data)
+      const response = await instance.post('/contacts', contact);
       return response.data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e.message);
     }
   }
 );
 
-export const removeContact = createAsyncThunk(
-  'contacts/removeContact',
-  async (contactId, thunkAPI) => {
+export const deleteContact = createAsyncThunk(
+  'contacts/deleteContact',
+  async (taskId, thunkAPI) => {
     try {
-      const response = await axios.delete(`/contacts/${contactId}`);
+      const response = await instance.delete(`/contacts/${taskId}`);
       return response.data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e.message);
+    }
+  }
+);
+
+export const updateContact = createAsyncThunk(
+  'contacts/deleteContact',
+  async (taskId, thunkAPI) => {
+    try {
+      const response = await instance.patch(`/contacts/${taskId}`);
+      return response.data;
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e.message);
     }
   }
 );

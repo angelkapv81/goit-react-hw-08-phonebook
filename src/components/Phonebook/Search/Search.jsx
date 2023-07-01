@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { selectFilter } from '../../store/contacts/selectors';
-import { setFilterValue } from '../../store/contacts/filterSlice';
+import { getFilter } from '../../../store/filter/selectors';
+import { setFilter } from '../../../store/filter/slice';
 
 import { ContactSearch } from './Search.styled';
 import { ContactFind } from './Search.styled';
@@ -8,9 +8,9 @@ import { ContactFind } from './Search.styled';
 const Search = () => {
   const dispatch = useDispatch();
 
-  const filterQuery = useSelector(selectFilter);
+  const filterQuery = useSelector(getFilter);
   const changeFilter = e => {
-    dispatch(setFilterValue(e.target.value.trim()));
+    dispatch(setFilter(e.target.value.trim()));
   };
 
   return (
